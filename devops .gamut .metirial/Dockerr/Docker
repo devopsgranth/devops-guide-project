@@ -1,0 +1,534 @@
+		Docker - The Container Virtualization Tool
+	==================================================
+
+Day-1:
+######
+#
+Diff bet'n Physical sever, Virtual server and Docker container.
+
+VM, Docker, usage in realtime
+
+#
+what is docker? why docker? who can use it?
+
+#
+Installation:
+================
+#
+Supported Platforms-
+	- Docker is supported on
+		- Linux platforms
+			Ubuntu, RHEL, CentOs..etc.
+		- Windows   (Using virtual environment)
+		- OS X 		(Using virtual environment)
+	
+	- Windows and OS X
+		- Docker installer: Uses Hyper-V to virtualize the Docker Engine environment and Linux kernel specific features for the Docker.
+		- Windows Docker installer contains a tiny Linux 
+		virtual machine. Docker creates container on top
+		of this tiny Linux VM.
+		  
+	- Cloud Platforms
+		Amazon EC2
+		Rackspace Cloud
+		Google compute Engine..etc.
+
+
+Requirements:
+	- 64-bit architecture	  
+	- Linux 3.8 or later Kernel
+	- Kerner must support an appropriate Storage
+	  driver (Examples of storage drivers: Device Mapper
+		(ubuntu default), aufs.
+
+
+#
+Requirements Check:
+	- Kernel
+		$ uname -a /-r
+			NOTE: Kernel can also be upgraded.
+
+	- Storage driver (device-mapper)
+		Docker requires storage to create images on 
+		a file system.	
+		$ cat /proc/devices
+	-	cgroups and namespaces are available by 
+		default in kernel
+
+#
+Docker Installation On Ubuntu:
+===========================
+	- supported on below Ubuntu releases:
+	    Yakkety 16.10
+	    Xenial 16.04 (LTS)
+	    Trusty 14.04 (LTS)
+	    
+	- Check OS name:
+		$ lsb_release -a / -cs
+		$ cat /etc/os-release		
+		
+	- Remove old installations(if any)
+		$ sudo apt-get remove docker docker-engine
+		$ sudo apt-get remove docker-ce
+	
+	- Install packages to allow apt to use a repository over HTTPS
+		$ sudo apt-get install apt-transport-https ca-certificates curl software-properties-common
+	
+	
+	-Add Docker’s official GPG key(Gnu's Privacy Guard):
+		$ curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+	
+	- Setup Stable repository:
+		$ sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
+	
+	- Update apt package index:
+		$ sudo apt-get update
+	
+	- Install Latest version of Docker
+		$ sudo apt-get install docker-ce
+
+#
+Installation Check
+	sudo docker run hello-world	
+	
+#
+Uninstall Docker:
+	- Remove Docker Installation:
+		$ sudo apt-get purge docker-ce
+		
+	- Delete all images, containers, and volumes from
+		$ sudo rm -rf /var/lib/docker
+
+#
+Manage/Run Docker as a non-root user	
+======================================
+	- By default the docker daemon binds to a Unix socket.
+	- This Unix socket is owned by root user.
+
+	- Socket:
+		- Sockets allow communication between two 
+		different processes on the same or different 
+		machines. 
+			
+	- So, If you don't want to use sudo when you run docker
+	  configure below:
+	  	- Create Unix group called docker
+	  	- Add the users to docker group
+	  	- when the docker daemon starts, it provides
+	  	  read/write permissions to docker group. So you can access Unix socket as normal user.
+
+	1. Create the docker group
+		$ sudo groupadd docker
+	2. Add your user to this group
+		$ sudo usermod -aG docker $USER
+	3. Logout and Log back so that your group membership
+	   is re-evaluated.
+	4. Verify docker run with your user
+	   $ docker run hello-world
+
+	5. Check group existance:
+		$ sudo grep docker /etc/group
+
+	6. Delete the group
+		$ sudo groupdel docker
+
+Managing docker containers
+===============================
+#
+sudo docker info
+	- shows
+		list of containers
+		list of images
+		storage drivers
+		kernel and mem stats..etc.
+			
+#
+sudo docker run hello-world
+
+#
+docker run
+	- docker run command provides all lanuching
+	capabilities for docker.
+	- we use `docker run` to create new containers.
+
+# Creating first container
+sudo docker run -i -t ubuntu /bin/bash
+	-i : opens STDIN from the container
+	-t : tells docker to assign a pseudo-tty to the
+		 container.
+	-it : provides interactive shell
+	
+	-d (daemonized): option runs container in
+	 				 background.
+	
+	`ubuntu` is an image and also called as "stock image" or "base image".
+
+
+
+# Inspect the new container
+1.
+	hostname
+2.
+	cat /etc/hosts
+3.
+	ifconfig
+		observe etho and lo network interfaces with 
+		ip address
+4.
+	apt-get install net-tools
+5
+	ps -aux
+6.
+	apt-get install vim
+
+
+#
+exit to stop the container
+	- In above example, container runs as long as /bin/bash is running.
+	
+# List running containers only
+sudo docker ps
+
+# ps command output
+	- image
+	- ID - container can be identified using (short UUID, longer UUID, name)
+	- docker ps -a --no-trunc -q"
+
+# show the last container(stopped/running)
+sudo docker ps -l
+
+# List all containers(stopped and running)
+sudo docker ps -a
+
+# Naming the container
+	docker run --name gamut -i -t ubuntu /bin/bash
+	
+Note: Two containers can't have the same name.
+		
+# Deleting container
+	docker rm ID/name
+	
+
+# Starting a stopped container
+	sudo docker start gamut
+	sudo docker stop aa3f365f0f4e
+	sudo docker restart gamut
+	
+# Attaching to a running container
+	docker attach gamut
+	docker attach b1b1c8dc1939
+
+
+	# Creating daemonized containers
+	- Ideal for running the applications and services
+	
+	- sudo docker run --name dgamut -d ubuntu /bin/sh 
+		-c "while true; do echo hello world; sleep 1; 
+			done"
+	
+		run --> creates a new container
+		--name --> names the container
+			-d --> runs the container (as daemonized process)/(in background mode)
+		ubuntu --> base image / stock image
+		/bin/sh --> once the container is created, this command will be executed i.e runs a SHELL.
+		-c --> read command from given string into shell instead of taking from standard input
+		while.. --> once the container is created, while loop prints 'hello world' continuously.
+		
+	- `docker ps` to check if the above daemonized
+	  container is running
+
+
+
+# Fetching the logs from daemonized container
+	- docker logs dgamut
+	- docker logs --tail 7 dgamut
+	- docker logs -f dgamut
+	- docker logs -ft dgamut
+	
+# Inspecting the container's processes
+	- docker top daemon_dave
+
+# Stoping a daemonized container
+	- docker stop dgamut
+	- docker stop ee319cddd42e(SIGTERM)
+	- docker kill dgamut (SIGKILL)
+
+# Show last 4 containers stopped/running
+	- docker ps -n4
+
+# Find More About The Container
+	- docker inspect dgamut
+	- inspect "interrogates" our container and returns the info like.. configuration info, names, commands, n/w configuratainers stopped/running
+	- docker ps -n4
+ion..etc.
+	 
+	 Examples:
+	- docker inspect --format '{{.Name}}' 8475ac
+	- docker inspect -f '{{.Config.Hostname}}' dgamut
+	- docker inspect --format {{.Config.Env}} dgamut 
+	
+	- You can inspect multiple containers:
+		sudo docker inspect --format '{{.Name}} 
+	{{.State.Running}}' daemon_dave bob_the_container
+	
+	Note: use --format (OR) -f.  	
+
+# Docker images, containers and container configurations are stored in:
+	- /var/lib/docker/image/storage_driver_name
+	- /var/lib/docker/containers
+
+# Delete all containers at once.
+	- Remove all stopped containers
+		docker rm `docker ps -a -q`
+	- Remove all running&stopped containers
+		docker rm -f  `docker ps -a -q`
+
+
+# Docker Images
+====================
+Agenda:
+	- Understand docker Image
+	- Modify docker Image
+	- Create docker Image
+	- Store docker Image
+	- Share your own Image
+	- Examine repositories that hold images
+	- 
+	Registries that store repositories.
+
+Docker images are the building blocks and from images, we launch containers.
+	
+# Listing docker images
+	- sudo docker images
+	- Images live in /var/lib/docker/image.
+	- Containers live in /var/lib/docker/containers
+
+
+# Image Layers Concept:
+		Writable container
+		Apache Image
+		VIM Image
+		Ubuntu Base Image(rootfs)
+		Bootfs:
+			cgroups, namespace, divicemapper/aufs..etc.
+		Kernel
+		
+	Notes: bootfs:
+			When container has booted, bootfs will be 
+			moved into memory and bootfs will be 
+			unmounted. This will free-up some RAM usage.
+		   
+		   rootfs:
+		   	After bootfs, docker layers rootfs on top of
+		   	boofts. i.e, ex: ubuntu's file system 
+
+			In traditional Linux boot, the root FS is
+			mounted as ready only and then switched to
+			read/write after the boot.
+			
+			But, Docker makes this rootfs reay-only and
+			using union-mount, it adds more read-only file
+			systems onto the root file system.
+			
+			Union-mount: union mount allows several FS
+			to be mounted at one time but appear to be
+			one filesystem.
+			
+			Resulting filesytem contains all files and
+			sub-directories from all of the underlying
+			filesystem.
+			
+			Docker calls each of these file systems as
+			images.
+			
+			When docker starts the container, the initial
+			read-write layer is empty. ex: if you want to
+			change a file, this file will be copied from
+			read-only layer below to read-write layer and
+			modified. This is called "copy-on-write".
+				
+# Images, Repository & Registries
+	- Images live inside repository
+	- Repositories live on registries.
+	- Default registry is public registry managed by
+	  Docker (Docker hub)
+
+# Two types of repositoris
+	- User repositories 
+		ex: jamtur01/puppet(username/repositoryname)
+	- Top-level repositories
+		ex: ubuntu (only repositoryname)
+	
+	User repositories: are controled by Docker user.
+	Top-level repositories: are controled by Docker 
+	core team.
+
+# Creating docker hub account
+- Docker Hub (https://hub.docker.com/)
+	- Each Repository can contain multiple images
+	- Images are Identified using tags.
+
+# Loging into the docker hub
+	- sudo docker login
+
+# Specifying Image via tags
+	- ubuntu:14.04
+	  ubuntu- repository name
+	  tag - 14.04
+	- jamtur01/puppet:tag
+	- sudo docker run -t -i --name gamut12.04 
+							ubuntu:12.04 /bin/bash
+
+# Pulling the images
+	- docker pull fedora
+	- docker pull jamtur01/puppetmaster
+	   (docker run -i -t jamtur01/puppetmaster /bin/bash)
+	   (puppet --version)
+	   (facter - puppet's inventory app)
+
+
+	   
+# Viewing the docker image
+	- docker images ubuntu
+	
+# Searching docker images in docker hub
+	- docker search puppet
+	- docker search jenkins
+	-
+
+
+# Building our own Image
+	Two Ways to create docker image:
+		1. docker commit
+		2. docker build cmd with Dockerfile
+
+# Creating docker image using docker commit command
+	A)
+	#create a new ubuntu container.
+	- docker run --name bgamut -i -t ubuntu /bin/bash
+	#install and configure your application
+	- mkdir home/gamut; mkdir school-app; touch 
+					gamut_school-app.jar
+	- chmod 777 gamut_school-app.jar
+	# exit the container
+	- exit
+	# get the ID of your container where school-app
+		is running.
+	- docker ps -l -q
+		27e4ba74d54b
+	# create a docker image from the container
+	- docker commit 27e4ba74d54b gamut/school-app	
+	# check if image has been created
+	  docker images gamut/school-app
+	# check the more details of your image
+		docker inspect gamut/school-app
+	# upload your image to docker repository for your customers
+
+	# Customer: Creates a container using your image
+	  This container should have everything up and
+	  running. 
+	# test your image by spinning-up a new container.
+		docker run -i -t gamut/school-app /bin/bash
+		
+		
+		
+		
+	B)	
+	- docker commit -m="this images can be used by schools for teaching mathematics up to 5th standard" --author="gamut gurus software services pvt. ltd." bbee48c768cc gamut/school-app:12.0
+	- $ docker inspect gamut/school-app:12.0
+	
+	Note: Docker commits only the difference between the image the container was created from and current state of the container.
+
+
+SETTING NGINX SERVER ON UBUNTU:
+================================
+ sudo apto-get update
+ sudo apt-get install -y nginx
+ 
+ know the status of nginx server:
+  sudo systemctl status nginx
+ 
+ start/stop/restart nginx server:
+ sudo systemctl stop nginx
+ sudo systemctl start nginx
+ sudo systemctl restart nginx
+ 
+ web content path:
+ /var/www/html
+
+Uninstall nginx:
+sudo apt-get purge nginx nginx-common
+sudo systemctl status nginx
+
+
+
+# docker build cmd with docker definition file Dockerfile
+	- mkdir static_web 
+	- cd static_web
+	- touch Dockerfile
+
+	--> static_web is called context or build context
+		contains the code, files or other data you want to
+		include in the image.
+	
+	- Write Dokckerfile:
+		#Version: 1.0
+		FROM ubuntu:14.04
+		MAINTAINER gamut "info@gamutgurus.com"
+		RUN apt-get update
+		RUN apt-get install -y nginx
+			RUN echo 'Hi I am in your container' > /usr/
+				share/nginx/html/index.html
+S		EXPOSE 80
+
+	$ sudo docker build -t="gamut/static_web" .	
+	$ sudo docker images gamut/static_web
+	$ docker history 2a439bd044bf
+	$ $ docker run -d -p 80 gamut/nginx nginx -g "daemon off;"
+	$ docker ps -l
+	$ docker port bfbde18d19e3 80
+	$ http://localhost:32768/
+	$ curl http://localhost:32768
+
+	- What happens if an instruction fai ls?
+	  How do you troubleshoot the issue?
+	  	[Run the failed step again manually..]
+	
+
+# Dockerfile Build Cache:
+=======
+		if some step in Dockerfile fails, Docker uses previously built images as a starting point and resumes the build.
+		if some steps are changed, docker will run the build again.
+		
+Bypassing the Dockerfile build cache
+$ sudo docker build --no-cache -t="jamtur01/static_web" .
+
+
+# Deleting an Image
+	- docker rmi nageshvkn/nginx
+# Deleting all Images
+	- docker rmi `docker images -q`
+		
+	
+	
+
+
+
+
+	
+QUESTIONS:
+============
+#
+allocate disk space
+
+#
+check docker container memory usage
+
+#
+linux containers on Windows
+
+#
+how do you get terminal for daemonized containers
+	docker run -d -it --name itdaemon ubuntu /bin/bash
+#
+

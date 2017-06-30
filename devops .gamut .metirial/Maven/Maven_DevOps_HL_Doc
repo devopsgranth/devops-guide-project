@@ -1,0 +1,381 @@
+l
+#1
+Java Build and Deployment End-To-End Workflow.
+
+#3
+Basic 
+	-Java program
+	- manual compilation
+	- Jar, War, Ear Creation
+
+
+#4
+What is Maven? Why we need a build tool?
+
+
+#1
+Installation
+	- JDK
+	- Maven
+	- Inspect Maven and JDK installation
+	- Set-up Environment variables for Maven and JDK
+
+Installing JDK and Maven:
+=======================
+  A. create $USER_HOME/.bashrc
+  
+  B. create below Environment variables
+	export M2_HOME=/home/praveen/mavensoftwares/apache-
+		maven-3.3.9
+	export JAVA_HOME=/home/praveen/mavensoftwares/
+		jdk1.8.0_121
+	export PATH=$M2_HOME/bin:$JAVA_HOME/bin:$PATH
+
+
+	Verify Installation:
+		javac -version
+		mvn -version
+		
+#2
+Build and Deployment E2E Demo
+	- What is compilation
+	- Packaging for Java application
+	- What is Build
+	- What is Deployment
+	- Build and Deployment process
+	- Environment
+	- Dev, QA, B & R, DevOps Interaction and Collaboration.
+	- Web application's development, build, deployment, Environments.
+	
+	- Troubleshooting deployment issues.
+
+
+=============================
+#8
+Maven's standard project layout
+=================================
+Project creation:
+-----------------
+java projects which are created by maven ideally follows below project folder structure.
+	
+	flipkart - is called artifact ID /project name
+	src 	 - Source folder which contains the 
+				application source code
+	main	 - Contains application's functional/main code
+	test	 - Contains application's unit testing 
+			   code
+	pom.xml  - Maven's build file using which we can
+				configure build steps such as 
+				compilation, jar/war creation,
+				deployments...etc.
+	
+	
+		flipkart
+			|
+			src		pom.xml
+			|
+	test---------main
+	|				|
+java		     java
+	|				|
+  (groupId)	  (groupId)
+	|				|
+AppTest.java		App.java
+
+#6
+Creating a Maven project:
+mvn archetype:generate
+		-DgroupId=com.gamutkart
+		-DartifactId=gamutkart
+		-Dversion=1.0-SNAPSHOT 
+		-DinteractiveMode=false
+
+	- artifactId  --> Project's base directory
+	  groupId	  --> package name/artifact 
+	  				  installation path
+	  pom.xml	  --> describes the project, configures plugins and declares the dependencies.
+
+
+
+Building the maven project:
+-----------------------
+Execute "mvn install" command to:
+	- init - prepares projects with initial pre-
+		requisites ex: setting properties, creating 
+		necessary directory structure..etc.
+	- validate - validate project's structure	 
+	- compile the "main" and "test" java code.
+	- run the test cases
+	- create jar/war
+	- copy built artifact to local repository .m2
+
+Note: Maven downloads all missing dependencies into
+		.m2. So we need to have internet.
+
+#21
+Maven Automatic Dependency managemnt/resolution
+	- Direct dependency
+	- Transitive dependency(hamcrest)
+
+#17
+Maven <dependency> declaration
+Adding new dependencies.
+	- Junit dependency
+
+#
+Skipping test cases:
+	$ mvn install -DskipTests
+	$ mvn install -Dmaven.test.skip=true
+
+#22
+Maven way of dependency addition, detection from different repositories
+
+#Scope
+Dependency scope and types:
+	- compile:
+		default scope
+	- provided:
+		provide the dependency at runtime by web 
+			containers. Ex: Servlet API, J2EE APIs
+	- runtime
+		only at run time, not during the compilation.
+	- :test
+		This scope indicates that the dependency is not required for normal use of the application, and is only available for the test compilation and execution phases
+
+Verify Built artifacts:
+--------------------------
+Go to "target" folder and observe below.
+	
+	gamutgurus-1.0-SNAPSHOT.jar: jar file of main code
+	
+	classes: directory contains compiled class files
+				of main/ folder
+	test-classes: directory contains compiled class
+				files of test/ folder
+				
+	surefire-reports: contains Junit test reports.
+
+
+#7
+Maven repositories
+	- Central
+	- Private/Remote (Nexus/atifactrory)
+	- Local (.m2)
+
+
+
+#10
+Clean Build
+
+#11
+Build types
+	- Complete build/Clean build/Full build
+	- Incremental build
+	- Nightly build
+	- Daily build
+	- bugfix build
+
+	- ad-hoc builds
+#13
+More about Local repository
+
+- artifact path/location in the local repository:
+	.m2/reposiotory/${groupId}/${artifactId}/${version}/${artifactId}-${version}.jar
+	
+- Package naming convention:
+	${artifactId}-${version}.jar
+ 
+#30
+Where Maven's coordinates come into picture / used.
+	- decide artifact storage path in local/central/remote
+		repositoris
+	- decide jar/war names.
+	- identify a particular version of jar file to be
+		downloaded or used in classpath during the
+		compilation
+
+
+#23
+Transitive dependency:
+	test case code --> junit ---> hamcrest
+
+- Dependency management in ANT and Maven
+
+#18
+Maven Site
+
+#19
+Maven Convention over configuration
+	- predefined build steps
+	- standard project layout
+
+#25
+Building the War
+
+#26
+Deployment into tomcat [Notes below]
+
+#27
+Troubleshooting Java web application
+
+
+Interview Notes:
+==================
+#28
+Maven Features:
+	1- Convention over configuration
+	2- Universal reuse of build practices, using Maven plugins.
+	3- Automatic dependency resolution feature
+	4- Maven is more than a Build tool- It's also called as "project management tool".
+		[ Using maven, we can generate a site containing project information, dependencies, test results, teams working on the project..etc. So, Maven can be also considered as a project management tool ]
+		
+	5- With a minimal/less build code, we can build 
+	  any project within a very less time.
+	
+	6- Easy searching and filtering of artifacts
+	7 - Tool portability (Eclipse, NetBeans, IntelliJ)
+	
+	
+ANT Vs Maven
+===============
+ANT:
+0
+======
+1.Ant is a low level build automation tool.
+
+2. Need more time to automate java build and deployment process
+
+3. ANT doesn't have automatic dependency resolution feature.
+
+4. ANT doesn't have anything called convention over configuration. i.e User is free to create any directory structure. ex: since there is no standard project structure, it may take more time for a developer to understand the project(more wramp-up time.)
+
+5.
+Ant is a build tool.
+
+6. 
+ANT is very simple and suitable if we have to do lot of customizations. I think that's why ANT is also used in lot of projects.
+
+
+7.
+Using ANT we can't generate a site for our project with administration information by default.
+
+8.
+No default mechanism to reuse built artifacts.
+
+9.
+Troubleshooting is very easy as we know  better about our build code.(Since we write everything)
+
+
+
+Maven:
+======
+1. Maven is a highlevel build tool.
+
+2. Within  a very less time, we can automate build and deployment process.
+
+3. Maven has automatic dependency feature. in the sense based on the pom.xml configurations, it can automatically download the dependencies from binary management repositories and add in the classpath during the compilation.
+	It can also handle trasitive dependencies.
+	
+4.
+Maven has convention over configuration mechanism for most of the automation requirements.
+	ex: standard project structure,
+		automatic dependency resolution,
+		predefined build life cycle
+
+5.
+Maven is more than a build tool.
+	ex: using maven, we can generate site for our project which includes, developers workign on a particular project, dependency list, test case statistics, automation graphs.
+
+6. Since Maven is high level tool, may not be suitable if we want to do more customizations.
+As Maven doesn't have easier documentation(relative comparison with ANT), It's little dificult to understand Maven. Especially if we have larger pom files and more customizations.
+
+7. Using Maven, we can generate a site for our project with administration information. So, it can act as a project management tool as well.
+
+8. Artifacts can be uploaded to binary repository management tools and shared across the projects/modules.
+
+9. Troubleshooting may become nightmare sometimes if we are not aware of maven automatic and highlevel concepts.
+
+
+
+1#
+End-to-End Build and Deployment:
+=================================
+	ssh usr@192.168.1.10
+	
+2.
+Clone gamutkart application source code into the build server from gamutkart github repository.
+	URL: https://github.com/gamutkart/gamutkart.git
+
+3.
+Build gamutkart application using below command.
+	$ mvn install
+	When we run mvn command, by default it will execute pom.xml file and runs the given goal(i.e install). According to Maven's lifecycle, maven executes all required build steps. ex: validate, init, compile, test, package and install...etc.
+	
+mvn install command reads the pom.xml for all build configurations before it executes it's lifecycle build steps. ex: it checks GAV(groupId, artifactId and version), package type(jar,war or ear), downloads the all the required dependencies from central or private repositories and compiles the source by including dependencies in javac compiler classpath.
+
+Based on the package and <finalName> attribute it produces the artifact(jar/war/ear) with given name and installs to .m2/repository/${groupId}/${artifactId}/${version}/${artifactId}-${version}.jar/war/ear.
+
+Assuming it's web application and .war is our final artifact, we need to deploy it to some application server like tomcat to make application accessible by the end user. 
+
+4. 
+Deploy gamutkart.war application to remote server deployment location(i.e $TOMCAT_HOME/webapps) using below command or some shell or automation scripts.
+	scp gamutkart.war gamut-idc-node1@192.168.0.4:/home/gamut-idc-node1/Distros/apache-tomcat-8.5.11/webapps
+
+4A.
+After the deployment, we need start the server using below tomcat startup comamnd.
+	$TOMCAT_HOME/bin/startup.sh
+
+5.
+Tomcat by default runs on port 8080. So application can be accessed with URL like below.
+	ex: http://tomcat_server_hostname_or_VIP:port/application_root
+		http://192.168.0.12:8080/gamutkart
+		
+6.
+In case there is any issue in the application, errors will be logged in $TOMCAT_HOME/logs/catalina.2017-03-24.log file.
+	We can check this file and if there are any errors/exceptions we provide this info to developers.
+	
+
+
+
+s
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+==========
+<project>
+  [...]
+  <properties>
+    <skipTests>true</skipTests>
+  </properties>
+  [...]
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <version>2.12.4</version>
+        <configuration>
+          <skipTests>${skipTests}</skipTests>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+  [...]
+</project>
+
+

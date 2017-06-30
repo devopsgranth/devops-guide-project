@@ -1,0 +1,38 @@
+
+
+open a file with vim editor
+	vim <file>
+
+i - insert to start edit
+esc - normal mode
+
+show line numbers:
+	:set number
+remove line numbers:
+	:set nonumber
+go to a line:
+	:linenumber
+
+dd - delete a line
+u - undo
+
+redo - ????????
+
+yy - copy a line
+p  - paste
+
+shift+g - go to last line of a file
+gg - go to first line of a file
+
+L - go to last line of current page
+H - go to first line of current page
+M - go to middle of the page
+
+:w - save your work
+:wq - save and quit
+
+0 - go to first character of current line
+$ - got to end character of current line
+w - move word by word
+
+
