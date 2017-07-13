@@ -70,17 +70,17 @@ java projects which are created by maven ideally follows below project folder st
 				deployments...etc.
 	
 	
-		flipkart
+		     flipkart
 			|
-			src		pom.xml
+			src	pom.xml
 			|
-	test---------main
-	|				|
-java		     java
-	|				|
-  (groupId)	  (groupId)
-	|				|
-AppTest.java		App.java
+	        test---------main
+	         |	       |
+              java	      java
+	        |		|
+           (groupId)	    (groupId)
+	        |		|
+          AppTest.java		App.java
 
 #6
 Creating a Maven project:
