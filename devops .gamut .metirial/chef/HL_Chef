@@ -17,7 +17,7 @@
 	  to build them from scratch. Using Chef, Servers can 
 	  be reproduced easily.
 
-	- Enables infrastrucute as a code.
+	- Enables infrastrucure as a code.
 	
 	- Chef can automatically detect the faults and repair 
 	  them.
@@ -237,7 +237,7 @@ Configuration management tool(Chef) advantages:
 		- In manually build infrastructure, people tend to
 		fear for implementing a change
 		- Servers can be reproduced easily.
-	- Simpliciry in rebuild:
+	- Simplicity in rebuild:
 		- when servers are build manually, it's not easy
 		  to build them from scratch. With Chef, we can 
 		  quickly restore the services.

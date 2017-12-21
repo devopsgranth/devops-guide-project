@@ -1,6 +1,6 @@
 #! /bin/bash
 
-echo -e "enter the value : \c"
+echo  "enter the value : \c"
 read age
 
 if [ $age -gt 18 ] && [ $age -lt 30 ]

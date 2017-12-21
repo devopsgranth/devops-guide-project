@@ -8,9 +8,12 @@ dpkg -i chef-server-core_12.13.0-1_amd64.deb
 chef-server-ctl reconfigure
  	-Chef server is composed of many different services that work together to create a functioning system, this step may take a few minutes to complete.
 	- check for "Chef Server Reconfigured!"
+
+(before this need to stop the apache2 service   : service apache2 stop)
 	 	
 # Create an administrator user and generate user key
 Syntax: $ chef-server-ctl user-create USER_NAME FIRST_NAME LAST_NAME EMAIL 'PASSWORD' --filename FILE_NAME
+
 
 ex:
 sudo chef-server-ctl user-create nageshvkn Nageswara Rao nageshvkn@gmail.com 'nageshvkn' --filename Certs/nageshvkn.pem
